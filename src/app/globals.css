@@ -1,0 +1,779 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+/* Tailwind v4 auto-scans every text file in the project for class names.
+   Our worklog.md (agent handover notes) and other markdown files contain
+   literal class-name patterns in code comments (such as text with a
+   wildcard brand token) that Tailwind would otherwise compile into
+   INVALID CSS rules. Exclude all markdown files from the scanner so the
+   build never breaks on docs. */
+@source not "../../**/*.md";
+@source not "../../node_modules";
+@source not "../../.next";
+@source not "../../skills/**";
+@source not "../../examples/**";
+@source not "../../download/**";
+@source not "../../upload/**";
+@source not "../../tool-results/**";
+@source not "../../.zscripts/**";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  /* Brand palette aliases for direct use */
+  --color-brand-navy: var(--brand-navy);
+  --color-brand-blue: var(--brand-blue);
+  --color-brand-mint: var(--brand-mint);
+  --color-brand-teal: var(--brand-teal);
+  --color-brand-purple: var(--brand-purple);
+  --color-brand-gold: var(--brand-gold);
+}
+
+/* Light theme is the only theme for GetSetGrades (per brand spec: "LIGHT, NOT DARK") */
+:root {
+  --radius: 1rem;
+
+  /* Surfaces */
+  --background: oklch(0.99 0.004 120);          /* off-white with the faintest green tint */
+  --foreground: oklch(0.21 0.03 250);          /* dark charcoal-navy text */
+  --card: oklch(1 0 0);                        /* pure white card surface */
+  --card-foreground: oklch(0.21 0.03 250);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.21 0.03 250);
+
+  /* Brand primary: deep navy (from the wordmark icon mark) */
+  --primary: oklch(0.27 0.05 256);
+  --primary-foreground: oklch(0.99 0.004 120);
+
+  /* Secondary: soft mint pastel */
+  --secondary: oklch(0.96 0.02 165);
+  --secondary-foreground: oklch(0.27 0.05 256);
+
+  /* Muted: very soft gray with green tint */
+  --muted: oklch(0.965 0.012 150);
+  --muted-foreground: oklch(0.45 0.02 250);
+
+  /* Accent: bright blue (from logo "Done") */
+  --accent: oklch(0.93 0.04 230);
+  --accent-foreground: oklch(0.27 0.05 256);
+
+  /* Destructive */
+  --destructive: oklch(0.58 0.23 27);
+  --destructive-foreground: oklch(0.99 0 0);
+
+  /* Borders / inputs / rings */
+  --border: oklch(0.91 0.01 180);
+  --input: oklch(0.92 0.012 180);
+  --ring: oklch(0.55 0.15 230);
+
+  /* Brand tokens (matching the logo) */
+  --brand-navy:  oklch(0.27 0.05 256);   /* wordmark icon dark navy */
+  --brand-blue:  oklch(0.55 0.18 230);   /* "Done" bright blue */
+  --brand-mint:  oklch(0.85 0.10 165);   /* sparkle / accent mint */
+  --brand-teal:  oklch(0.70 0.10 180);   /* character body teal */
+  --brand-purple:oklch(0.55 0.13 300);   /* character top purple */
+  --brand-gold:  oklch(0.82 0.15 85);    /* tassel gold */
+
+  /* Chart palette */
+  --chart-1: oklch(0.55 0.18 230);
+  --chart-2: oklch(0.70 0.10 180);
+  --chart-3: oklch(0.55 0.13 300);
+  --chart-4: oklch(0.82 0.15 85);
+  --chart-5: oklch(0.85 0.10 165);
+
+  /* Sidebar */
+  --sidebar: oklch(0.99 0.004 120);
+  --sidebar-foreground: oklch(0.21 0.03 250);
+  --sidebar-primary: oklch(0.27 0.05 256);
+  --sidebar-primary-foreground: oklch(0.99 0.004 120);
+  --sidebar-accent: oklch(0.93 0.04 230);
+  --sidebar-accent-foreground: oklch(0.27 0.05 256);
+  --sidebar-border: oklch(0.91 0.01 180);
+  --sidebar-ring: oklch(0.55 0.15 230);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 5rem; /* offset for sticky navbar when jumping to anchors */
+    /* Global overflow safety net — prevents any stray absolute / negative-margin
+       element from creating horizontal scroll. The real fix is at the component
+       level (proper max-widths, min-w-0 on grid items, contained decorative
+       elements), but this ensures we never get a horizontal scrollbar even if
+       a future edit introduces an oversized element. */
+    overflow-x: clip;
+    max-width: 100%;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "ss01", "cv01", "cv02";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    max-width: 100%;
+    overflow-x: clip;
+  }
+  /* Accessible focus states */
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-ring;
+  }
+  ::selection {
+    background-color: color-mix(in oklch, var(--brand-blue) 30%, transparent);
+  }
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Utility: brand gradient text */
+.brand-text-gradient {
+  background: linear-gradient(90deg,
+    var(--brand-navy) 0%,
+    var(--brand-blue) 55%,
+    var(--brand-teal) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Subtle grid / dotted background used in hero */
+.bg-grid {
+  background-image:
+    linear-gradient(to right, color-mix(in oklch, var(--brand-navy) 5%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in oklch, var(--brand-navy) 5%, transparent) 1px, transparent 1px);
+  background-size: 36px 36px;
+  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, #000 40%, transparent 100%);
+          mask-image: radial-gradient(ellipse 70% 60% at 50% 0%, #000 40%, transparent 100%);
+}
+
+/* Soft elevated card shadow */
+.shadow-soft {
+  box-shadow:
+    0 1px 2px -1px color-mix(in oklch, var(--brand-navy) 8%, transparent),
+    0 4px 12px -4px color-mix(in oklch, var(--brand-navy) 8%, transparent),
+    0 12px 28px -12px color-mix(in oklch, var(--brand-navy) 10%, transparent);
+}
+.shadow-soft-lg {
+  box-shadow:
+    0 2px 4px -2px color-mix(in oklch, var(--brand-navy) 8%, transparent),
+    0 12px 28px -8px color-mix(in oklch, var(--brand-navy) 10%, transparent),
+    0 28px 60px -20px color-mix(in oklch, var(--brand-navy) 14%, transparent);
+}
+
+/* Custom slim scrollbar for long lists */
+.scrollbar-slim {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in oklch, var(--brand-navy) 20%, transparent) transparent;
+}
+.scrollbar-slim::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.scrollbar-slim::-webkit-scrollbar-thumb {
+  background-color: color-mix(in oklch, var(--brand-navy) 22%, transparent);
+  border-radius: 9999px;
+}
+.scrollbar-slim::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Floating gentle animation for hero decorative elements (respects reduced motion) */
+@keyframes float-soft {
+  0%, 100% { transform: translateY(0) }
+  50% { transform: translateY(-8px) }
+}
+.animate-float-soft {
+  animation: float-soft 6s ease-in-out infinite;
+}
+@keyframes float-soft-slow {
+  0%, 100% { transform: translateY(0) }
+  50% { transform: translateY(-12px) }
+}
+.animate-float-soft-slow {
+  animation: float-soft-slow 9s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-float-soft,
+  .animate-float-soft-slow { animation: none; }
+}
+
+/* ============================================================
+   Premium polish utilities added in the styling-polish round
+   ============================================================ */
+
+/* Glassmorphism card frosted, semi-transparent surface with subtle blur.
+   Used on hero floating chips, the booking stepper and modal accents. */
+.glass-card {
+  background-color: color-mix(in oklch, white 72%, transparent);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  border: 1px solid color-mix(in oklch, white 60%, transparent);
+  box-shadow:
+    0 1px 2px -1px color-mix(in oklch, var(--brand-navy) 8%, transparent),
+    0 12px 28px -8px color-mix(in oklch, var(--brand-navy) 12%, transparent),
+    0 28px 60px -20px color-mix(in oklch, var(--brand-navy) 16%, transparent);
+}
+.glass-card-tinted {
+  background-color: color-mix(in oklch, var(--brand-mint) 32%, transparent);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  border: 1px solid color-mix(in oklch, white 50%, transparent);
+  box-shadow:
+    0 1px 2px -1px color-mix(in oklch, var(--brand-navy) 8%, transparent),
+    0 12px 28px -8px color-mix(in oklch, var(--brand-navy) 12%, transparent);
+}
+
+/* Atmospheric mesh-gradient background three soft colored radial blobs
+   blending mint, blue and a faint purple. Drop behind the hero or any
+   section that needs "atmosphere". */
+.mesh-gradient-bg {
+  background:
+    radial-gradient(ellipse 50% 50% at 15% 20%, color-mix(in oklch, var(--brand-mint) 55%, transparent), transparent 70%),
+    radial-gradient(ellipse 45% 55% at 85% 15%, color-mix(in oklch, var(--brand-blue) 30%, transparent), transparent 70%),
+    radial-gradient(ellipse 60% 50% at 70% 90%, color-mix(in oklch, var(--brand-purple) 18%, transparent), transparent 70%),
+    radial-gradient(ellipse 55% 50% at 20% 85%, color-mix(in oklch, var(--brand-teal) 25%, transparent), transparent 70%);
+}
+
+/* Single soft "blob" a blurred colored circle for decorative atmosphere.
+   Compose 2-3 of these at different positions/sizes/colors. */
+.blob {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(60px);
+  opacity: 0.55;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Big faded decorative section number sits behind a section heading to
+   add visual rhythm without competing for attention. */
+.section-number {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-weight: 700;
+  font-size: clamp(4rem, 12vw, 9rem);
+  line-height: 1;
+  letter-spacing: -0.05em;
+  color: color-mix(in oklch, var(--brand-navy) 6%, transparent);
+  -webkit-user-select: none;
+  user-select: none;
+  pointer-events: none;
+}
+
+/* Subtle dotted-grid background alternative to .bg-grid using dots. */
+.bg-dots {
+  background-image: radial-gradient(color-mix(in oklch, var(--brand-navy) 12%, transparent) 1.2px, transparent 1.2px);
+  background-size: 22px 22px;
+}
+
+/* Gradient ring / glow border for premium "highlighted" cards. */
+.ring-gradient {
+  position: relative;
+}
+.ring-gradient::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg,
+    color-mix(in oklch, var(--brand-blue) 60%, transparent),
+    color-mix(in oklch, var(--brand-mint) 50%, transparent),
+    color-mix(in oklch, var(--brand-teal) 40%, transparent));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+          mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* Soft glow behind a CTA / hero element radial mint halo. */
+.glow-mint {
+  position: absolute;
+  inset: -20% -10% -20% -10%;
+  background: radial-gradient(ellipse 60% 50% at 50% 50%, color-mix(in oklch, var(--brand-mint) 50%, transparent), transparent 70%);
+  filter: blur(40px);
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Scroll-reveal base hidden state; the React ScrollReveal wrapper toggles
+   the `.is-visible` class via IntersectionObserver. Respects reduced motion
+   (the wrapper short-circuits to always-visible). */
+.reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.55s ease, transform 0.55s ease;
+  will-change: opacity, transform;
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .reveal.is-visible {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* Marquee / horizontal scroll for trust strip used by .marquee track. */
+@keyframes marquee {
+  0% { transform: translateX(0) }
+  100% { transform: translateX(-50%) }
+}
+.animate-marquee {
+  animation: marquee 28s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee { animation: none; }
+}
+
+/* Card hover lift slightly stronger than the default, with a subtle
+   border glow on hover. Applied to premium feature cards. */
+.card-lift {
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+.card-lift:hover {
+  transform: translateY(-4px);
+  border-color: color-mix(in oklch, var(--brand-blue) 35%, var(--border));
+  box-shadow:
+    0 4px 12px -4px color-mix(in oklch, var(--brand-blue) 18%, transparent),
+    0 18px 36px -12px color-mix(in oklch, var(--brand-navy) 14%, transparent);
+}
+
+/* Animated underline used on "Learn more" links. */
+.link-underline {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 0% 1.5px;
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  transition: background-size 0.3s ease;
+}
+.link-underline:hover {
+  background-size: 100% 1.5px;
+}
+
+/* Ambient blob drift very slow, very subtle, respects reduced motion */
+@keyframes drift-slow {
+  0%, 100% { transform: translate(0, 0) }
+  50% { transform: translate(20px, -16px) }
+}
+@keyframes drift-slower {
+  0%, 100% { transform: translate(0, 0) }
+  50% { transform: translate(-18px, 12px) }
+}
+.animate-drift-slow {
+  animation: drift-slow 18s ease-in-out infinite;
+}
+.animate-drift-slower {
+  animation: drift-slower 24s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-drift-slow,
+  .animate-drift-slower {
+    animation: none;
+  }
+}
+
+
+/* ============================================================
+   God-level animations — added in the hero layout-fix round
+   ============================================================ */
+
+/* Animated gradient shimmer on brand text — slowly shifts the gradient
+   across the text. Used on the hero headline's "gets things done." line. */
+@keyframes brand-gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+.brand-text-gradient-animated {
+  background: linear-gradient(
+    90deg,
+    var(--brand-navy) 0%,
+    var(--brand-blue) 35%,
+    var(--brand-teal) 65%,
+    var(--brand-blue) 100%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: brand-gradient-shift 6s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .brand-text-gradient-animated { animation: none; background-size: 100% 100%; }
+}
+
+/* Slow rotating conic gradient ring around the glass card — premium glow.
+   Applied via a pseudo-element on .glass-card-glow. */
+@keyframes rotate-slow {
+  to { transform: rotate(360deg); }
+}
+.glass-card-glow {
+  position: relative;
+}
+.glass-card-glow::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: conic-gradient(
+    from 0deg,
+    color-mix(in oklch, var(--brand-blue) 50%, transparent),
+    color-mix(in oklch, var(--brand-mint) 50%, transparent),
+    color-mix(in oklch, var(--brand-teal) 50%, transparent),
+    color-mix(in oklch, var(--brand-purple) 40%, transparent),
+    color-mix(in oklch, var(--brand-blue) 50%, transparent)
+  );
+  filter: blur(8px);
+  opacity: 0.5;
+  z-index: -1;
+  animation: rotate-slow 14s linear infinite;
+  pointer-events: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .glass-card-glow::before { animation: none; }
+}
+
+/* Pulsing status dot — used on "Tutor assigned ✓" and "Online" pills. */
+@keyframes pulse-ring {
+  0% { box-shadow: 0 0 0 0 color-mix(in oklch, var(--brand-blue) 50%, transparent); }
+  70% { box-shadow: 0 0 0 8px color-mix(in oklch, var(--brand-blue) 0%, transparent); }
+  100% { box-shadow: 0 0 0 0 color-mix(in oklch, var(--brand-blue) 0%, transparent); }
+}
+.animate-pulse-ring {
+  animation: pulse-ring 2.2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-pulse-ring { animation: none; }
+}
+
+/* Shimmer sweep across a progress bar — gives the "active session" feel. */
+@keyframes shimmer-sweep {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
+}
+.shimmer-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    color-mix(in oklch, white 50%, transparent) 50%,
+    transparent 100%
+  );
+  animation: shimmer-sweep 2.5s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .shimmer-overlay { animation: none; display: none; }
+}
+
+/* Gradient-border card — a subtle gradient ring that's always on (not rotating). */
+.gradient-border {
+  position: relative;
+}
+.gradient-border::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    135deg,
+    color-mix(in oklch, var(--brand-blue) 50%, transparent),
+    color-mix(in oklch, var(--brand-mint) 40%, transparent) 50%,
+    color-mix(in oklch, var(--brand-teal) 30%, transparent)
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+          mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* Bounce-in entrance for floating chips — a small overshoot. */
+@keyframes chip-bounce-in {
+  0% { opacity: 0; transform: translateY(8px) scale(0.92); }
+  60% { opacity: 1; transform: translateY(-2px) scale(1.04); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+.animate-chip-in {
+  animation: chip-bounce-in 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-chip-in { animation: none; opacity: 1; transform: none; }
+}
+
+/* Slow breathing scale for hero blob backgrounds — adds life. */
+@keyframes breathe {
+  0%, 100% { transform: scale(1); opacity: 0.55; }
+  50% { transform: scale(1.08); opacity: 0.7; }
+}
+.animate-breathe {
+  animation: breathe 12s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-breathe { animation: none; }
+}
+
+/* CTA button magnetic hover — subtle scale + shadow lift. */
+.cta-magnetic {
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease, background-color 0.25s ease;
+  will-change: transform;
+}
+.cta-magnetic:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow:
+    0 8px 20px -6px color-mix(in oklch, var(--brand-blue) 35%, transparent),
+    0 12px 32px -8px color-mix(in oklch, var(--brand-navy) 18%, transparent);
+}
+.cta-magnetic:active {
+  transform: translateY(0) scale(0.99);
+}
+@media (prefers-reduced-motion: reduce) {
+  .cta-magnetic,
+  .cta-magnetic:hover,
+  .cta-magnetic:active {
+    transition: background-color 0.2s ease;
+    transform: none;
+  }
+}
+
+/* ============================================================
+   REAL liquid-glass utility (audit Part 1)
+   ============================================================
+   The hero session panel is the centerpiece of the redesign.
+   It needs to feel like premium physical glass — not generic
+   Tailwind `bg-white/50`. We layer:
+     - a semi-transparent white fill
+     - backdrop blur + saturation
+     - a 1px white-ish outer border
+     - an inset 1px highlight near the top edge (specular)
+     - a large, soft ambient shadow
+     - very subtle mint/cyan/blue edge reflections via the
+       `::after` pseudo-element (a soft conic tint, low opacity)
+   Apply with class `liquid-glass`.
+   ============================================================ */
+.liquid-glass {
+  position: relative;
+  background-color: rgba(255, 255, 255, 0.62);
+  backdrop-filter: blur(28px) saturate(140%);
+  -webkit-backdrop-filter: blur(28px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  /* Inset highlight near the top edge (specular reflection). */
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.7),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.18),
+    0 2px 8px -2px rgba(15, 23, 42, 0.06),
+    0 18px 40px -16px rgba(15, 23, 42, 0.14),
+    0 36px 80px -28px rgba(15, 23, 42, 0.18);
+}
+/* Subtle edge reflections: mint top-left, cyan bottom-right, faint blue
+   top-right. Drawn via a low-opacity radial gradient layer. Never shiny. */
+.liquid-glass::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background:
+    radial-gradient(120% 60% at 0% 0%, rgba(167, 243, 208, 0.18), transparent 55%),
+    radial-gradient(120% 60% at 100% 100%, rgba(165, 243, 252, 0.16), transparent 55%),
+    radial-gradient(80% 40% at 100% 0%, rgba(191, 219, 254, 0.12), transparent 55%);
+  mix-blend-mode: screen;
+  opacity: 0.9;
+}
+/* Specular highlight band across the very top edge — a thin bright line
+   that sells the "physical glass" look without becoming shiny. */
+.liquid-glass::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.55) 0%,
+    rgba(255, 255, 255, 0.08) 18%,
+    transparent 40%
+  );
+  opacity: 0.7;
+}
+
+/* Lighter variant for floating status cards (thinner, less shadow). */
+.liquid-glass-floating {
+  position: relative;
+  background-color: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(22px) saturate(140%);
+  -webkit-backdrop-filter: blur(22px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.7),
+    0 6px 18px -6px rgba(15, 23, 42, 0.10),
+    0 18px 36px -16px rgba(15, 23, 42, 0.16);
+}
+
+/* Smallest variant for tiny contextual notifications. */
+.liquid-glass-pill {
+  background-color: rgba(255, 255, 255, 0.68);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.78);
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.6),
+    0 4px 12px -4px rgba(15, 23, 42, 0.10),
+    0 10px 22px -10px rgba(15, 23, 42, 0.12);
+}
+
+/* Navbar glass — denser so text stays readable while scrolling. */
+.liquid-glass-nav {
+  background-color: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(20px) saturate(150%);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.7),
+    0 6px 18px -8px rgba(15, 23, 42, 0.10),
+    0 16px 32px -16px rgba(15, 23, 42, 0.12);
+}
+.liquid-glass-nav-scrolled {
+  background-color: rgba(255, 255, 255, 0.86);
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.8),
+    0 8px 22px -8px rgba(15, 23, 42, 0.12),
+    0 20px 40px -16px rgba(15, 23, 42, 0.16);
+}
+
+/* Hero ambient glow behind the session panel — large, soft, mint-tinted.
+   Sits behind the glass card to create the depth layer 1. */
+.liquid-glass-ambient {
+  position: absolute;
+  inset: -12% -8% -12% -8%;
+  background:
+    radial-gradient(ellipse 55% 50% at 30% 30%, color-mix(in oklch, var(--brand-mint) 55%, transparent), transparent 70%),
+    radial-gradient(ellipse 45% 50% at 80% 70%, color-mix(in oklch, var(--brand-blue) 30%, transparent), transparent 70%),
+    radial-gradient(ellipse 60% 50% at 50% 100%, color-mix(in oklch, var(--brand-teal) 25%, transparent), transparent 70%);
+  filter: blur(48px);
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Slow drift for the ambient glow (10–18s, very subtle). */
+@keyframes ambient-drift {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50% { transform: translate3d(-2%, -1%, 0) scale(1.04); }
+}
+.animate-ambient-drift {
+  animation: ambient-drift 14s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-ambient-drift { animation: none; }
+}
+
+/* Slow vertical float for the main glass card (6–9s, ~4px). */
+@keyframes glass-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+.animate-glass-float {
+  animation: glass-float 7s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-glass-float { animation: none; }
+}
+
+/* Slightly different float for the foreground status card (7–11s). */
+@keyframes glass-float-alt {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+.animate-glass-float-alt {
+  animation: glass-float-alt 9s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-glass-float-alt { animation: none; }
+}
+
+/* Subtle status-dot pulse — very gentle. */
+@keyframes status-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 color-mix(in oklch, var(--brand-blue) 40%, transparent); }
+  50% { box-shadow: 0 0 0 6px color-mix(in oklch, var(--brand-blue) 0%, transparent); }
+}
+.animate-status-pulse {
+  animation: status-pulse 2.4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-status-pulse { animation: none; }
+}
+
+/* Eyebrow badge glass — small uppercase pill with mint/blue dot. */
+.eyebrow-glass {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.375rem 0.875rem;
+  border-radius: 9999px;
+  background-color: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(12px) saturate(140%);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.6),
+    0 4px 10px -4px rgba(15, 23, 42, 0.08);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: color-mix(in oklch, var(--brand-navy) 90%, transparent);
+}

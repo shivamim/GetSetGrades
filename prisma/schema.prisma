@@ -1,0 +1,158 @@
+// ============================================================
+// GetSetGrades Prisma schema
+// ------------------------------------------------------------
+// PostgreSQL in every environment — local dev included. There is no
+// SQLite fallback: point DATABASE_URL at a real Postgres instance
+// (a free Neon/Supabase branch works fine for local dev) before running
+// `prisma generate`, `prisma migrate dev`, or `next dev`.
+//
+// The initial migration lives at prisma/migrations/<timestamp>_init/ and
+// is already committed — run `prisma migrate deploy` to apply it. See
+// DEPLOYMENT.md for the exact recipe.
+// ============================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================
+// Contact messages (lightweight contact-form submissions).
+// ============================================================
+
+model ContactMessage {
+  id        String   @id @default(cuid())
+  reference String   @unique // GDC-XXXXXXXX, server-generated, server-trusted
+  ipHash    String? // salted SHA-256 first-32 hex chars; never raw IP
+
+  name      String
+  email     String
+  whatsapp  String
+  service   String
+  message   String
+
+  // Lifecycle: new | reviewed | archived
+  status    String   @default("new")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([createdAt])
+}
+
+// ============================================================
+// Support requests (richer than contact, lighter than a full booking).
+// Used by the homepage contact-section form ("Find My Tutor").
+// ============================================================
+
+model SupportRequest {
+  id              String   @id @default(cuid())
+  reference       String   @unique // GDS-XXXXXXXX
+  ipHash          String?
+
+  fullName        String
+  email           String
+  whatsapp        String
+  country         String?
+  subject         String
+  supportType     String
+  educationLevel  String
+  description     String?
+  deadline        String?
+  budget          String?
+
+  // Lifecycle: new | reviewing | matched | closed
+  status          String   @default("new")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([createdAt])
+}
+
+// ============================================================
+// Bookings (multi-step flow with payment).
+//
+// Payment state machine:
+//   pending          -> request just created
+//   pending_payment  -> user clicked through to hosted checkout,
+//                       payment NOT yet verified
+//   paid             -> authenticated admin verified the PayPal payment
+//   failed           -> payment marked failed during manual review
+//   cancelled        -> user/admin cancelled before payment
+//   refunded         -> payment was refunded
+//
+// We NEVER mark a booking `paid` merely because the user clicked the
+// payment link. Only an authenticated admin reconciliation can flip
+// status to `paid`.
+// ============================================================
+
+model Booking {
+  id              String   @id @default(cuid())
+  reference       String   @unique // GDB-XXXXXXXX
+  ipHash          String?
+
+  // Step 1: Service
+  service         String
+
+  // Step 2: Requirements
+  fullName        String
+  email           String
+  whatsapp        String
+  country         String?
+  subject         String?
+  supportType     String
+  educationLevel  String
+  description     String?
+
+  // Step 3: Timing
+  preferredTiming String?
+  timezone        String?
+  sessionLength   String?
+
+  // Step 4: Review
+  acknowledged    Boolean  @default(false)
+
+  // Step 5: Payment (NEVER store card data here)
+  status          String   @default("pending") // see state machine above
+  paymentStatus   String   @default("none")    // none | pending | paid | failed | refunded
+  paymentReference String? // provider's payment intent / charge id
+  paymentAmount   Int?     // smallest currency unit (e.g. cents)
+  paymentCurrency String?  // ISO 4217 (USD, INR, ...)
+  paidAt          DateTime?
+  provider        String?  // stripe | razorpay | paypal | ...
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([createdAt])
+  @@index([status])
+  @@index([paymentReference])
+}
+
+// ============================================================
+// Grievance tickets (redressal).
+// ============================================================
+
+model Grievance {
+  id              String   @id @default(cuid())
+  ticketReference String   @unique // GDT-XXXXXXXX
+  ipHash          String?
+
+  subject         String
+  description     String
+  reference       String? // user-supplied order/payment ref (optional)
+  preferredContact String  // Email | WhatsApp
+  name            String
+  email           String
+
+  // Lifecycle: open | in_review | resolved | closed
+  status          String   @default("open")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([createdAt])
+  @@index([status])
+}
